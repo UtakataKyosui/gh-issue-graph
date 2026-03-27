@@ -1,0 +1,60 @@
+[package]
+name = "gh-issue-graph"
+version = "0.1.0"
+edition = "2021"
+description = "Analyze and visualize GitHub Issue/PR relationships as an interactive graph"
+license = "MIT"
+
+[[bin]]
+name = "gh-issue-graph"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Async
+tokio = { version = "1", features = ["full"] }
+
+# GitHub API
+octocrab = "0.44"
+reqwest = { version = "0.12", features = ["json"] }
+
+# TUI
+ratatui = { version = "0.30", features = ["crossterm"] }
+crossterm = { version = "0.28", features = ["event-stream"] }
+tokio-stream = "0.1"
+futures = "0.3"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# jq filtering
+jaq-core = "2"
+jaq-std = "2"
+jaq-json = { version = "1", features = ["serde_json"] }
+
+# Graph
+petgraph = { version = "0.7", features = ["serde-1"] }
+
+# Colors
+catppuccin = { version = "2", features = ["ratatui"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "2"
+
+# Config
+dirs = "6"
+
+# Utilities
+regex = "1"
+chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
