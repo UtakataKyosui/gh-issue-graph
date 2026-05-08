@@ -16,20 +16,16 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            asset_name: gh-issue-graph_linux_amd64
-            archive_ext: tar.gz
+            asset_name: gh-issue-graph-linux-amd64
           - os: macos-latest
             target: x86_64-apple-darwin
-            asset_name: gh-issue-graph_darwin_amd64
-            archive_ext: tar.gz
+            asset_name: gh-issue-graph-darwin-amd64
           - os: macos-latest
             target: aarch64-apple-darwin
-            asset_name: gh-issue-graph_darwin_arm64
-            archive_ext: tar.gz
+            asset_name: gh-issue-graph-darwin-arm64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            asset_name: gh-issue-graph_windows_amd64
-            archive_ext: zip
+            asset_name: gh-issue-graph-windows-amd64.exe
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -45,25 +41,22 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Package artifact (Unix)
+      - name: Prepare artifact (Unix)
         if: matrix.os != 'windows-latest'
         run: |
           mkdir -p dist
-          cp target/${{ matrix.target }}/release/gh-issue-graph gh-issue-graph
-          tar czf dist/${{ matrix.asset_name }}.tar.gz gh-issue-graph
-          rm gh-issue-graph
+          cp target/${{ matrix.target }}/release/gh-issue-graph dist/${{ matrix.asset_name }}
+          chmod +x dist/${{ matrix.asset_name }}
 
-      - name: Package artifact (Windows)
+      - name: Prepare artifact (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item target/${{ matrix.target }}/release/gh-issue-graph.exe gh-issue-graph.exe
-          Compress-Archive -Path gh-issue-graph.exe -DestinationPath dist/${{ matrix.asset_name }}.zip
-          Remove-Item gh-issue-graph.exe
+          Copy-Item target/${{ matrix.target }}/release/gh-issue-graph.exe dist/${{ matrix.asset_name }}
 
       - name: Upload to release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/${{ matrix.asset_name }}.${{ matrix.archive_ext }}
+          files: dist/${{ matrix.asset_name }}
           generate_release_notes: true
