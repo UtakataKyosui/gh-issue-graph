@@ -3,6 +3,7 @@ mod config;
 mod error;
 mod github;
 mod graph;
+mod monitor;
 mod theme;
 mod tui;
 mod types;
@@ -75,6 +76,8 @@ enum Commands {
         #[command(subcommand)]
         action: ConfigAction,
     },
+    /// Monitor multiple repos for overlapping issue work (TUI)
+    Monitor,
 }
 
 #[derive(Subcommand)]
@@ -89,7 +92,10 @@ enum ConfigAction {
 async fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    // config サブコマンド
+    // サブコマンド処理
+    if let Some(Commands::Monitor) = cli.command {
+        return monitor::run().await;
+    }
     if let Some(Commands::Config { action }) = cli.command {
         return handle_config_command(action);
     }

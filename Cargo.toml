@@ -1,6 +1,6 @@
 [package]
 name = "gh-issue-graph"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Analyze and visualize GitHub Issue/PR relationships as an interactive graph"
 license = "MIT"
@@ -40,6 +40,12 @@ petgraph = { version = "0.7", features = ["serde-1"] }
 
 # Colors
 catppuccin = { version = "2", features = ["ratatui"] }
+
+# Monitor subcommand deps
+tachyonfx = "0.25"
+throbber-widgets-tui = "0.11"
+foldhash = "0.1"
+indexmap = "2"
 
 # Error handling
 anyhow = "1"
