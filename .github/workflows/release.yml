@@ -10,13 +10,21 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: dtolnay/rust-toolchain@stable
 
       - uses: Swatinem/rust-cache@v2
+
+      - name: Install aarch64 cross-compilation tools (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y gcc-aarch64-linux-gnu
 
       - uses: cli/gh-extension-precompile@v2
         with:
